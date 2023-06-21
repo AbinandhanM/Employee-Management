@@ -1,0 +1,84 @@
+Employee MicroService
+=====================
+
+Adding Employee: - POST
+-----------------------
+
+User - Parent 
+   	UsrerId - PK, Identity
+	Password-AutoGenerate
+        PasswordHash
+	PasswordKey
+	Role: Manager/Employee
+Employee (Register Requird Details)
+	Employee ID: A unique identifier for each employee in the system.(Foregin Key)
+	First Name: The employee's first name.
+	Last Name: The employee's last name.
+	Date of Birth: The employee's date of birth.
+	Gender: The employee's gender.
+	Email Address: The employee's email address for communication.
+	Phone Number: The employee's contact number.
+	Address: The employee's physical address.
+	Passport ID : Passport Number
+	DL Number: Driving License Number
+	Skills/Qualifications: A list of skills or qualifications possessed by the employee.
+	Manager ID: Employee can choose his/her own manager.
+
+User Login/Register Response DTO
+--------------------------------
+Emplooye ID
+Role
+Token
+
+Login DTO
+---------
+Employee ID
+Password
+
+
+
+Change Employee Status: - PUT
+-----------------------------
+
+Employee Status
+	Employee ID: A unique identifier for each employee in the system.(Foregin Key)
+	Status : Active/InActive/Quit
+
+Update Employee Details:(DTO) - PUT
+-----------------------------------
+UpdateEmployeeDetails(DTO)
+	Employee ID: A unique identifier for each employee in the system.(Foregin Key)
+	Phone Number: The employee's contact number.
+	Address: The employee's physical address.
+	Passport ID : Passport Number
+	DL Number: Driving License Number
+
+Listing Employee Details: - Get/GetAll
+--------------------------------------
+Employee ID (Get)
+Authorize("Manager") (GetAll)
+
+Leave Microservice:
+==================
+
+Leave (Employee - POST / Manager Get)
+--------------------------------------
+
+	Leave ID(Primary Key Identity)
+	Employee ID: A unique identifier for each employee in the system.(Foregin Key)
+	Leave Title
+	Leave Description
+	Number of Days
+	Status:Approved/DisApprove
+
+End Points
+==========
+	Emplooyee Register - User DTO - Token
+     	Emplooye Login - Login DTO - Token
+     	Add Emplooyes - (Register)
+	Changing Emplooyee Status
+	Updateing Emplooyee Details (Phone/Address/Passport/DL Number)
+	Listing Employee
+	Apply Leave
+	Approve Leave
+
