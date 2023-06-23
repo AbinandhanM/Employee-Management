@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmployeeAPI.Migrations
 {
     [DbContext(typeof(EmployeeContext))]
-    [Migration("20230621070938_init")]
-    partial class init
+    [Migration("20230623041013_Kanini")]
+    partial class Kanini
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
