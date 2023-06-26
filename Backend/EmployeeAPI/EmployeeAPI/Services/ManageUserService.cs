@@ -13,25 +13,41 @@ namespace EmployeeAPI.Services
         private readonly IRepo<int, Employee> _employeeRepo;
         private readonly ITokenGenerate _tokenService;
         private readonly IGeneratePassword _passwordService;
+        
 
         public ManageUserService(IRepo<int, User> userRepo,
             IRepo<int, Employee> employeeRepo,
             IGeneratePassword passwordService,
-            ITokenGenerate tokenService)
+            ITokenGenerate tokenService
+            )
         {
             _userRepo = userRepo;
             _employeeRepo = employeeRepo;
             _tokenService = tokenService;
             _passwordService = passwordService;
+           
         }
 
-        public Task<UserDTO> ChangeStatus(UserDTO user)
+        public async Task<User> ChangeStatus(User user)
         {
-            throw new NotImplementedException();
+            var employees = await _userRepo.GetAll();
+            if (employees != null) 
+            {
+                var employeeStatusUpdate = employees.FirstOrDefault(e => e.UserId == user.UserId);
+                if (employeeStatusUpdate != null)
+                {
+                    employeeStatusUpdate.Status = user.Status;
+                    await _userRepo.Update(employeeStatusUpdate);
+                    
+                }
+                    
+
+            }
+            return user;
         }
 
-        public async Task<UserDTO?> Login(UserDTO user)
-        {
+         public async Task<UserDTO?> Login(UserDTO user)
+         {
             var userData = await _userRepo.Get(user.UserID);
             if (userData != null)
             {

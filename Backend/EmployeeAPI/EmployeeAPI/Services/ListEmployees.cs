@@ -5,11 +5,11 @@ namespace EmployeeAPI.Services
 {
     public class ListEmployees : IListEmployee
     {
-        private readonly IRepo<int,Employee> _repo;
+        private readonly IRepo<int, Employee> _repo;
 
         public ListEmployees(IRepo<int,Employee> repo)
         {
-            repo = _repo;
+            _repo = repo;
         }
         public async Task<Employee> GetEmployeeById(int id)
         {
@@ -20,9 +20,20 @@ namespace EmployeeAPI.Services
 
         public async Task<ICollection<Employee>> GetEmployees()
         {
-            var result = new List<Employee>();
             var employees = (await _repo.GetAll()).ToList();       
-           return result;
+           return employees;
+        }
+
+        public async Task<ICollection<Employee>?> GetEmployeesByManagerID(int managerId)
+        {
+            var result = await _repo.GetAll();
+            if (result!=null)
+            {
+                var employees = result.ToList();
+                var classifiedEmployees = employees.Where(e => e.ManagerID == managerId).ToList();
+                return classifiedEmployees;
+            }
+            return null; 
         }
     }
 }

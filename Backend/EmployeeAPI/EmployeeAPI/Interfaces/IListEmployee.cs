@@ -7,5 +7,7 @@ namespace EmployeeAPI.Interfaces
         Task<ICollection<Employee>> GetEmployees();
 
         Task<Employee> GetEmployeeById(int empid);
+        Task<ICollection<Employee>?> GetEmployeesByManagerID(int managerId);
+
     }
 }

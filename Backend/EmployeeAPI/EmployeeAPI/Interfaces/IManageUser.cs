@@ -7,6 +7,6 @@ namespace EmployeeAPI.Interfaces
     {
         public Task<UserDTO> Login(UserDTO user);
         public Task<UserDTO> Register(Employee employee);
-        public Task<UserDTO> ChangeStatus(UserDTO user);
+        public Task<User> ChangeStatus(User user);
     }
 }

@@ -36,7 +36,7 @@ namespace EmployeeAPI.Controllers
             return Ok(users);
         }
 
-        [HttpGet("{ID}")]
+        [HttpGet("GetEmployeeByID")]
         //[Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(ActionResult<ICollection<Employee>>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -46,6 +46,21 @@ namespace EmployeeAPI.Controllers
             if (users == null)
             {
                 return NotFound("No interns are available at the moment");
+            }
+            return Ok(users);
+        }
+
+
+        [HttpGet("GetEmployeeByManagerID")]
+        //[Authorize(Roles = "Admin")]
+        [ProducesResponseType(typeof(ActionResult<ICollection<Employee>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Employee>> GetEmployeeByManagerID(int managerId)
+        {
+            var users = await _listEmployee.GetEmployeesByManagerID(managerId);
+            if (users == null)
+            {
+                return NotFound("No employees are available at the moment");
             }
             return Ok(users);
         }
