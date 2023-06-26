@@ -11,17 +11,25 @@ namespace EmployeeAPI.Services
         {
             _repo = repo;
         }
-        public async Task<Employee> GetEmployeeById(int id)
+        public async Task<Employee?> GetEmployeeById(int id)
         {
           var result = await _repo.Get(id);
-            return result;
+            if (result!=null)
+            {
+                return result;
+            }
+            return null;
         }
 
 
-        public async Task<ICollection<Employee>> GetEmployees()
+        public async Task<ICollection<Employee>?> GetEmployees()
         {
-            var employees = (await _repo.GetAll()).ToList();       
-           return employees;
+            var employees = await _repo.GetAll();
+            if (employees!=null)
+            {
+                return employees.ToList();
+            }
+            return null;
         }
 
         public async Task<ICollection<Employee>?> GetEmployeesByManagerID(int managerId)

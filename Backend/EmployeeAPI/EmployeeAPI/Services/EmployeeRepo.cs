@@ -44,13 +44,13 @@ namespace EmployeeAPI.Services
 
         public async Task<Employee?> Get(int key)
         {
-            var employee = await _context.Employees.Include(e=>e.Skills).FirstOrDefaultAsync(e => e.ID == key);
+            var employee = await _context.Employees.Include(e=>e.User).Include(e=>e.Skills).FirstOrDefaultAsync(e => e.ID == key);
             return employee;
         }
 
         public async Task<ICollection<Employee>?> GetAll()
         {
-            var employees = await _context.Employees.Include(e=>e.Skills).ToListAsync();
+            var employees = await _context.Employees.Include(e => e.User).Include(e=>e.Skills).ToListAsync();
             if (employees.Count > 0)
                 return employees;
             return null;

@@ -28,22 +28,37 @@ namespace EmployeeAPI.Services
            
         }
 
-        public async Task<User> ChangeStatus(User user)
+        public async Task<Employee?> AddEmployee(Employee employee)
+        {
+            UserDTO? user = null;
+            var hmac = new HMACSHA512();
+            string? generatedPassword = await _passwordService.GeneratePassword(employee);
+            employee.User.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(generatedPassword));
+            employee.User.PasswordKey = hmac.Key;
+            employee.User.Status = "InActive";
+            var userResult = await _userRepo.Add(employee.User);
+            var employeeResult = await _employeeRepo.Add(employee);
+            if (userResult != null && employeeResult != null)
+            {
+                return employeeResult;
+            }
+            return null;
+        }
+
+        public async Task<User?> ChangeStatus(UpdateUserStatus user)
         {
             var employees = await _userRepo.GetAll();
             if (employees != null) 
             {
-                var employeeStatusUpdate = employees.FirstOrDefault(e => e.UserId == user.UserId);
+                var employeeStatusUpdate = employees.FirstOrDefault(e => e.UserId == user.userId);
                 if (employeeStatusUpdate != null)
                 {
-                    employeeStatusUpdate.Status = user.Status;
-                    await _userRepo.Update(employeeStatusUpdate);
-                    
+                    employeeStatusUpdate.Status = user.status;
+                    var updatedUser = await _userRepo.Update(employeeStatusUpdate);
+                    return updatedUser;
                 }
-                    
-
             }
-            return user;
+            return null;
         }
 
          public async Task<UserDTO?> Login(UserDTO user)
@@ -58,7 +73,7 @@ namespace EmployeeAPI.Services
                     if (userPass[i] != userData.PasswordHash[i])
                         return null;
                 }
-                if (userData.Status == "Approved")
+                if (userData.Status == "Active")
                 {
                     user = new UserDTO();
                     user.UserID = userData.UserId;
@@ -66,31 +81,28 @@ namespace EmployeeAPI.Services
                     user.Token = _tokenService.GenerateToken(user);
                     return user;
                 }
-
             }
-            return null; ;
+            return null;
         }
 
-        public async Task<UserDTO> Register(Employee employee)
+        public async Task<UserDTO?> Register(Employee employee)
         {
 
-            UserDTO user = null;
-            var hmac = new HMACSHA512();
-            string generatedPassword = await _passwordService.GeneratePassword(employee);
-            employee.User.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(generatedPassword));
-            employee.User.PasswordKey = hmac.Key;
-            employee.User.Role = "Intern";
-            employee.User.Status = "Not Approved";
-            var userResult = await _userRepo.Add(employee.User);
-            var employeeResult = await _employeeRepo.Add(employee);
-            if (userResult != null && employeeResult != null)
+            UserDTO? user = null;
+            var employeeResult = await AddEmployee(employee);
+            if (employeeResult != null)
             {
-                user = new UserDTO();
-                user.UserID = employeeResult.ID;
-                user.Role = userResult.Role;
-                user.Token = _tokenService.GenerateToken(user);
+                var userResult = await _userRepo.Get(employeeResult.ID);
+                if (userResult != null)
+                {
+                    user = new UserDTO();
+                    user.UserID = userResult.UserId;
+                    user.Role = userResult.Role;
+                    user.Token = _tokenService.GenerateToken(user);
+                    return user;
+                }
             }
-            return user;
+            return null;
 
         }
     }

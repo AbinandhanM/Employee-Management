@@ -1,6 +1,8 @@
 ﻿using EmployeeAPI.Interfaces;
 using EmployeeAPI.Models;
 using EmployeeAPI.Models.DTOs;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +10,8 @@ namespace EmployeeAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("AngularCORS")]
+
     public class ListEmployeeController : ControllerBase
     {
         private readonly IRepo<int, User> _userRepo;
@@ -52,7 +56,7 @@ namespace EmployeeAPI.Controllers
 
 
         [HttpGet("GetEmployeeByManagerID")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Manager")]
         [ProducesResponseType(typeof(ActionResult<ICollection<Employee>>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Employee>> GetEmployeeByManagerID(int managerId)

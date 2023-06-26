@@ -1,5 +1,6 @@
 ﻿using LeaveAPI.Interfaces;
 using LeaveAPI.Models;
+using LeaveAPI.Models.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,10 +11,12 @@ namespace LeaveAPI.Controllers
     public class LeaveController : ControllerBase
     {
         private readonly IRepo<int, Leave> _repo;
+        private readonly ILeaveService _leaveService;
 
-        public LeaveController(IRepo<int,Leave> repo)
+        public LeaveController(IRepo<int,Leave> repo,ILeaveService leaveService)
         {
             _repo = repo;
+            _leaveService = leaveService;
         }
         [HttpGet]
         [ProducesResponseType(typeof(ActionResult<ICollection<Leave>>), StatusCodes.Status200OK)]
@@ -44,12 +47,24 @@ namespace LeaveAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ICollection<Leave>>> Add(Leave leave)
         {
-            var result = await _repo.Add(leave);
+            var result = await _leaveService.ApplyLeave(leave);
             if (result == null)
             {
                 return NotFound("unable to add the leave details");
             }
             return Created("Home", result);
+        }
+        [HttpPut]
+        [ProducesResponseType(typeof(ActionResult<Leave>), StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Leave>> ApproveLeave(LeaveDTO leave)
+        {
+            var result = await _leaveService.UpdateLeaveStatus(leave);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return BadRequest("Unable to update leave details");
         }
         [HttpPut]
         [ProducesResponseType(typeof(ActionResult<Leave>), StatusCodes.Status202Accepted)]
