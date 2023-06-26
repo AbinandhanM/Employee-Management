@@ -1,3 +1,9 @@
+using LeaveAPI.Context;
+using LeaveAPI.Interfaces;
+using LeaveAPI.Models;
+using LeaveAPI.Services;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +12,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<LeaveContext>(op => op.UseSqlServer(builder.Configuration.GetConnectionString("UserCon")));
+builder.Services.AddScoped<IRepo<int,Leave>, LeaveRepo>();
 
 var app = builder.Build();
 
